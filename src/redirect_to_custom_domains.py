@@ -42,5 +42,5 @@ def main(apply: bool) -> None:
 
 
 if __name__ == "__main__":
-    APPLY = True
+    APPLY = False
     main(APPLY)
