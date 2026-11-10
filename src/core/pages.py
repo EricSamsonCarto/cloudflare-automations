@@ -106,7 +106,7 @@ def create_git_project(
         apply: Whether to create the project or only preview it.
     """
     owner, repo_name = repo.split("/", 1)
-    env_vars = {"env_vars": {"NODE_VERSION": {"type": "plain_text", "value": "24"}}}
+    env_vars = {"env_vars": {"NODE_VERSION": {"type": "plain_text", "value": "26"}}}
     if not announce(f"create Pages project {name} from {repo}@{branch}", apply):
         return
     client.pages.projects.create(
