@@ -16,9 +16,6 @@ from core.redirects import (
 )
 
 
-APPLY = False
-
-
 def main(apply: bool) -> None:
     """Redirect every Pages project's pages.dev and www hostnames to its custom domain and disable previews.
 
@@ -45,4 +42,5 @@ def main(apply: bool) -> None:
 
 
 if __name__ == "__main__":
+    APPLY = True
     main(APPLY)
