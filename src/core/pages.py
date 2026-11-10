@@ -90,6 +90,7 @@ def create_git_project(
     repo: str,
     branch: str,
     app_project: str,
+    preview_setting: str,
     apply: bool,
 ) -> None:
     """Create a Git-connected Pages project using the Conness GIS build settings.
@@ -101,6 +102,7 @@ def create_git_project(
         repo: The GitHub repository as owner/name.
         branch: The production branch.
         app_project: The folder under app/projects to build.
+        preview_setting: Which branches build previews: "none", "all", or "custom".
         apply: Whether to create the project or only preview it.
     """
     owner, repo_name = repo.split("/", 1)
@@ -125,7 +127,7 @@ def create_git_project(
                 "production_branch": branch,
                 "deployments_enabled": True,
                 "production_deployments_enabled": True,
-                "preview_deployment_setting": "none",
+                "preview_deployment_setting": preview_setting,
                 "pr_comments_enabled": False,
                 "path_includes": ["app/*"],
                 "path_excludes": ["app/projects/_*"],

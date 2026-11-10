@@ -1,3 +1,4 @@
+from core.access import protect_previews
 from core.client import (
     get_client,
     load_credentials,
@@ -24,10 +25,21 @@ PROJECT = "my-site"
 DOMAIN = "example.com"
 APP_PROJECT = PROJECT
 BRANCH = "main"
+PREVIEW_DEPLOYMENTS = "none"
+PREVIEW_ACCESS_EMAILS = ["you@example.com"]
 APPLY = False
 
 
-def main(repo: str, project: str, domain: str, app_project: str, branch: str, apply: bool) -> None:
+def main(
+    repo: str,
+    project: str,
+    domain: str,
+    app_project: str,
+    branch: str,
+    preview_setting: str,
+    access_emails: list[str],
+    apply: bool,
+) -> None:
     """Create a Git-connected Pages site with its custom domain, www, and redirects.
 
     Args:
@@ -36,6 +48,8 @@ def main(repo: str, project: str, domain: str, app_project: str, branch: str, ap
         domain: The bare domain, whose zone must be in this account.
         app_project: The folder under app/projects to build.
         branch: The production branch.
+        preview_setting: Which branches build previews: "none", "all", or "custom".
+        access_emails: Emails allowed to view previews through Cloudflare Access; empty skips Access.
         apply: Whether to make the changes or only print what would change.
     """
     token, account_id = load_credentials()
@@ -48,7 +62,9 @@ def main(repo: str, project: str, domain: str, app_project: str, branch: str, ap
 
     pages_subdomain = f"{project}.pages.dev"
     domains = [domain, f"www.{domain}"]
-    create_git_project(client, account_id, project, repo, branch, app_project, apply)
+    create_git_project(client, account_id, project, repo, branch, app_project, preview_setting, apply)
+    if access_emails:
+        protect_previews(client, account_id, project, access_emails, apply)
     for hostname in domains:
         attach_domain(client, account_id, project, hostname, apply)
         ensure_cname(client, zone_id, hostname, pages_subdomain, apply)
@@ -63,4 +79,4 @@ def main(repo: str, project: str, domain: str, app_project: str, branch: str, ap
 
 
 if __name__ == "__main__":
-    main(REPO, PROJECT, DOMAIN, APP_PROJECT, BRANCH, APPLY)
+    main(REPO, PROJECT, DOMAIN, APP_PROJECT, BRANCH, PREVIEW_DEPLOYMENTS, PREVIEW_ACCESS_EMAILS, APPLY)
